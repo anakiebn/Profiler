@@ -21,9 +21,9 @@ public class PageResultsController {
     }
 
 
-    @GetMapping("/{query}/{noOfPages}")
-    public ResponseEntity<PageResult> search(@PathVariable String query,@PathVariable String noOfPages){
-        PageResult pageResult=pageResultService.getPageResult(query,Integer.parseInt(noOfPages));
+    @GetMapping("/{query}")
+    public ResponseEntity<PageResult> search(@PathVariable String query){
+        PageResult pageResult=pageResultService.getPageResult(query);
 
         return new ResponseEntity<>(pageResult, HttpStatus.OK);
     }

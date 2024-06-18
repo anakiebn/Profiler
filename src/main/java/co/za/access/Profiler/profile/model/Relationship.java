@@ -1,0 +1,7 @@
+package co.za.access.Profiler.profile.model;
+
+public enum Relationship {
+
+    FRIEND,NEIGHBOUR,FAMILY,RELATED,SISTER,BROTHER,GIRL_FRIEND,BOY_FRIEND,EX,ENEMY,SON,MOTHER,FATHER,PARENT, PROFESSIONAL
+}
+

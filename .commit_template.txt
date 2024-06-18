@@ -1,29 +1,30 @@
-# Summary (required)
-#
-# Briefly summarize the changes made in this commit.
-#
-# Description (optional)
-#
-# Provide a more detailed explanation of the changes made by this commit.
-#
+# <type>(<scope>): <short summary>
+# Examples:
+#   feat(user): add new login feature
+#   fix(auth): resolve login timeout issue
+#   chore: update dependencies
+#   docs: update API documentation
+#   refactor: refactor login service for performance
+#   style: fix formatting issues
+#   test: add tests for user login
+
+# Detailed description explaining the change (if necessary):
 # - Why is this change necessary?
 # - What problem does it solve?
-# - Are there any side effects or risks?
-#
-# Related Issues (optional)
-#
-# List any related issue numbers (e.g., Fixes #123, Closes #456).
-#
-# Checklist (optional)
-#
-# - [ ] My code follows the code style of this project.
-# - [ ] I have performed a self-review of my code.
-# - [ ] I have commented my code, particularly in hard-to-understand areas.
-# - [ ] I have made corresponding changes to the documentation.
-# - [ ] My changes generate no new warnings.
-# - [ ] I have added tests that prove my fix is effective or that my feature works.
-# - [ ] New and existing unit tests pass locally with my changes.
-#
-# Notes (optional)
-#
-# Any additional notes about this commit.
+# - What does it implement/fix?
+# - Are there any side effects?
+
+# Related Issues:
+# Fixes #<issue_number>, Closes #<issue_number>
+
+# Checklist:
+# - [ ] Code follows the code style of the project
+# - [ ] Self-review of code performed
+# - [ ] Commented code, particularly in hard-to-understand areas
+# - [ ] Corresponding changes to documentation made
+# - [ ] No new warnings generated
+# - [ ] Tests added for new/modified functionality
+# - [ ] New and existing unit tests pass
+
+# Notes:
+# Any additional notes about this commit
