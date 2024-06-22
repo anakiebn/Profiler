@@ -7,10 +7,10 @@ import lombok.Data;
 
 public class Source {
 
+
     private String srcImg;
     private String srcLink;
     private String srcName;
-
     public Source(String srcImg, String srcLink, String srcName) {
         this.srcImg = srcImg;
         this.srcLink = srcLink;

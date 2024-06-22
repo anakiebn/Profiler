@@ -2,12 +2,15 @@ package co.za.access.Profiler.googleSearch.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Generated;
 
 import java.util.Objects;
 
 public class Result {
 
 
+
+    private Long id;
     private Source src;
     private String title;
     private String description;

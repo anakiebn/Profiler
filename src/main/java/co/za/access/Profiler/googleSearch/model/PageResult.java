@@ -10,7 +10,7 @@ import java.util.Set;
 
 public class PageResult {
 
-
+    private Query query;
     private Set<Result> results;
     private int noOfPages;
 

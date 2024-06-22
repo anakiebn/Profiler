@@ -71,8 +71,8 @@ public class PageResultServiceImpl implements PageResultService {
                 System.out.println("result: "+"\n"+e.html());
             });
             Set<Result> searchResults=results.stream().map(e->{
-                String title = e.select("h3.DKV0Md").text();
 
+                String title = e.select("h3.DKV0Md").text();
                 String srcLink = e.select("a[href^=\"http\"]").attr("href");
                 String description = e.select(".VwiC3b").text();
                 String srcName = e.getElementsByClass("VuuXrf").text();
