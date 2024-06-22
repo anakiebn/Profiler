@@ -28,6 +28,10 @@ public class PageResultServiceImpl implements PageResultService {
 
     private int noOfPages;
 
+
+    private String testGit;
+
+
     @Override
     public PageResult getPageResult(String query) {
         log.info("Searching for.... "+query);
