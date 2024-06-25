@@ -1,7 +1,7 @@
-package co.za.access.Profiler.googleSearch.controller;
+package co.za.access.Profiler.dataCollection.controller;
 
-import co.za.access.Profiler.googleSearch.model.PageResult;
-import co.za.access.Profiler.googleSearch.service.PageResultService;
+import co.za.access.Profiler.dataCollection.model.PageResult;
+import co.za.access.Profiler.dataCollection.service.PageResultService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +23,8 @@ public class PageResultController {
 
     @GetMapping("/{query}")
     public ResponseEntity<PageResult> search(@PathVariable String query){
-        PageResult pageResult=pageResultService.getPageResult(query);
+
+        PageResult pageResult=pageResultService.findByQuery(query.trim());
         return new ResponseEntity<>(pageResult, HttpStatus.OK);
     }
 }
