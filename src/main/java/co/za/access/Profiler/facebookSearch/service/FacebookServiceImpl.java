@@ -1,14 +1,13 @@
 package co.za.access.Profiler.facebookSearch.service;
 
-import jakarta.annotation.PreDestroy;
+import co.za.access.Profiler.config.AppConfig;
+import co.za.access.Profiler.config.FacebookVariable;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.C;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -17,82 +16,104 @@ import java.time.Duration;
 @Slf4j
 public class FacebookServiceImpl implements FacebookService {
 
-    @Value("${webdriver.chrome.driver}")
-    private String chromeDriverPath;
-
-    @Value("${facebook.loginEmail}")
-    private String fbLoginEmail;
-
-    @Value("${facebook.loginPassword}")
-    private String fbLoginPassword;
     private WebDriver driver;
+    private WebDriverWait wait;
 
-    @Value("${facebook.personOfThatName}")
-    private String  personOfThatName;
+    private final AppConfig appConfig;
+    private final FacebookVariable facebookVariable;
 
-    @Value("${facebook.people}")
-    private String people;
+    public FacebookServiceImpl(AppConfig appConfig, FacebookVariable facebookVariable) {
+        this.appConfig = appConfig;
+        this.facebookVariable = facebookVariable;
+    }
 
-    public void openFacebook(){
-        System.setProperty("webdriver.chrome.driver", chromeDriverPath);
-        ChromeOptions options=new ChromeOptions();
+    private void openFacebook() {
+        log.info("Loading chrome driver...");
+        System.setProperty("webdriver.chrome.driver", appConfig.getChromeDriver());
+        ChromeOptions options = new ChromeOptions();
         options.addArguments("--disable-notifications");
         options.addArguments("--start-maximized");
         options.addArguments("--incognito");
         driver = new ChromeDriver(options);
+        wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+        log.info("Opening Facebook...");
         driver.get("https://www.facebook.com?locale=en");
     }
 
     @Override
-    public String searchPerson(String name) {
+    public final String searchPerson(String name) {
         openFacebook();
+        rejectCookies();
         logIntoFacebook();
         try {
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-            WebElement searchBar = driver.findElement(By.cssSelector("input.x1i10hfl.xggy1nq.x1s07b3s"));
+            wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(facebookVariable.getSearchBar())));
+
+            WebElement searchBar = driver.findElement(By.cssSelector(facebookVariable.getSearchBar()));
             searchBar.sendKeys(name);
             searchBar.sendKeys(Keys.ENTER);
 
-            wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(people)));
-
-            //                 ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", moreResults);
-        }catch (NoSuchElementException nsee){
-            log.error("Facebook element not found! {}",nsee.getMessage());
-        }catch (TimeoutException toe){
-            log.error("Timeout! Element still not found! {}",toe.getMessage());
+            filterBy("Gauteng");
+            driver.quit();
+            return "found " + name;
+        } catch (NoSuchElementException nsee) {
+            log.error("Search bar not found! {}", nsee.getMessage());
+        } catch (TimeoutException toe) {
+            log.error("Timeout! Element still not found! {}", toe.getMessage());
+        } catch (IllegalArgumentException iae) {
+            log.error("Unexpected error", iae);
         }
-        return "logged in";
+        throw new RuntimeException("Error while trying to find " + name);
     }
 
-    public void organizeResults(){
-
-
+    private void rejectCookies() {
+        try {
+            log.info("Rejecting cookies...");
+            WebElement rejectAllBtn = driver.findElement(By.id(facebookVariable.getCookieWindow()));
+            if (rejectAllBtn.isDisplayed()) {
+                rejectAllBtn.click();
+                log.info("Cookies rejected...");
+            }
+        } catch (NoSuchElementException nsee) {
+            log.error("Cookies Button not found... Proceeding with operations");
+        }
     }
 
+    private void logIntoFacebook() throws NoSuchElementException, IllegalArgumentException {
+        try {
+            log.info("Logging into Facebook as, {} ", facebookVariable.getLoginEmail());
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(facebookVariable.getEmailField())));
+            WebElement emailField = driver.findElement(By.id(facebookVariable.getEmailField()));
+            WebElement passwordField = driver.findElement(By.id(facebookVariable.getPasswordField()));
+            WebElement loginBtn = driver.findElement(By.name(facebookVariable.getLoginBtn()));
 
-    public void logIntoFacebook() throws NoSuchElementException, IllegalArgumentException {
-            // Here, I'm rejecting cookies
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("._4t2a")));
-            WebElement declineCookieBtn = driver.findElement(By.cssSelector("div[aria-label=\"Decline optional cookies\"]"));
-            declineCookieBtn.click();
-
-            wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.id("header_block")));
-            // login section
-            WebElement emailField = driver.findElement(By.id("email"));
-            WebElement passwordField = driver.findElement(By.id("pass"));
-            WebElement loginButton = driver.findElement(By.name("login"));
-            emailField.sendKeys(fbLoginEmail);
-            passwordField.sendKeys(fbLoginPassword);
-            loginButton.submit();
-
+            emailField.sendKeys(facebookVariable.getLoginEmail());
+            passwordField.sendKeys(facebookVariable.getLoginPassword());
+            loginBtn.submit();
+        } catch (NoSuchElementException nsee) {
+            log.error("No such element found! Logging in failed!", nsee);
+        } catch (TimeoutException toe) {
+            log.error("Time out exception, check your network or element doesn't exist. Logging in failed!", toe);
+        }
     }
 
+    private void filterBy(String by) {
+        log.info("Filtering by people...");
+        try {
+            // Log the page source for debugging
+            String pageSource = driver.getPageSource();
+            log.debug("Page Source: " + pageSource);
 
-    @PreDestroy
-    private void cleanUp(){
-//        driver.quit();
+            WebElement peopleBtn = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(facebookVariable.getFilterPeopleBtn())));
+            if (peopleBtn.isDisplayed()) {
+                peopleBtn.click();
+            } else {
+                JavascriptExecutor js = (JavascriptExecutor) driver;
+                js.executeScript("arguments[0].click();", peopleBtn);
+            }
+        } catch (NoSuchElementException nsee) {
+            log.error("No such element found!", nsee);
+        } catch (TimeoutException toe) {
+            log.error("Time out exception, check your network or people button not found!", toe);
+        }
     }
-
-
 }

@@ -1,5 +1,6 @@
 package co.za.access.Profiler.dataCollection.service;
 
+import co.za.access.Profiler.config.AppConfig;
 import co.za.access.Profiler.dataCollection.exception.PageResultNotFoundException;
 import co.za.access.Profiler.dataCollection.exception.QueryNotFoundException;
 import co.za.access.Profiler.dataCollection.exception.ResultsNotFoundException;
@@ -16,6 +17,7 @@ import org.jsoup.nodes.Element;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -30,22 +32,23 @@ import java.util.stream.Collectors;
 @Slf4j
 public class PageResultServiceImpl implements PageResultService {
 
-    @Value("${webdriver.chrome.driver}")
-    private String chromeDriverPath;
 
     private int noOfPages;
     private final PageResultRepository pageResultRepository;
     private final QueryService queryService;
     private final ResultService resultService;
     private final SourceService sourceService;
+    private WebDriver driver;
+    private final AppConfig appConfig;
 
     public PageResultServiceImpl(PageResultRepository pageResultRepository,
                                  QueryService queryService, ResultService resultService,
-                                 SourceService sourceService) {
+                                 SourceService sourceService,AppConfig appConfig) {
         this.pageResultRepository = pageResultRepository;
         this.queryService = queryService;
         this.resultService = resultService;
         this.sourceService = sourceService;
+        this.appConfig=appConfig;
     }
 
     @Override
@@ -73,12 +76,13 @@ public class PageResultServiceImpl implements PageResultService {
         Query query = new Query();
         query.setName(queryName);
         log.info("Searching for.... " + queryName.trim());
-        System.setProperty("webdriver.chrome.driver", chromeDriverPath);
-        final WebDriver driver = new ChromeDriver();
+        System.setProperty("webdriver.chrome.driver", appConfig.getChromeDriver());
+        driver = new ChromeDriver();
 
 
         try {
-            driver.get("https://www.google.co.za");
+            driver.get("https://www.google.co.za/search?hl=en");
+            rejectCookies();
             WebElement searchBar = driver.findElement(By.name("q"));
             searchBar.sendKeys(queryName.trim());
             searchBar.submit();
@@ -139,14 +143,30 @@ public class PageResultServiceImpl implements PageResultService {
             pr.setResults(resultService.saveAll(searchResults));
             return pr;
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+           log.error(e.getMessage());
             throw new RuntimeException("Error, procession query!");
         } finally {
             driver.quit();
         }
     }
 
+    public void searchingPerson(String name){
 
+    }
+
+    public void rejectCookies(){
+        try {
+            log.info("Rejecting cookies...");
+            WebElement rejectAllBtn = driver.findElement(By.id("W0wltc"));
+            if(rejectAllBtn.isDisplayed()){
+                rejectAllBtn.click();
+                log.info("Cookies rejected...");
+            }
+
+        }catch (NoSuchElementException nsee){
+            log.error("Cookies Button not found... Proceeding with operations");
+        }
+    }
     private void cleaningResult(Set<Result> result) {
 
 
