@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/profiler/api/pageResults")
+@RequestMapping("/profiler/api/v1/googleSearch")
 public class PageResultController {
 
     private final PageResultService pageResultService;

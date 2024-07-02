@@ -1,6 +1,6 @@
 package co.za.access.Profiler.dataCollection.service;
 
-import co.za.access.Profiler.config.AppConfig;
+import co.za.access.Profiler.config.AppVariable;
 import co.za.access.Profiler.dataCollection.exception.PageResultNotFoundException;
 import co.za.access.Profiler.dataCollection.exception.QueryNotFoundException;
 import co.za.access.Profiler.dataCollection.exception.ResultsNotFoundException;
@@ -17,9 +17,7 @@ import org.jsoup.nodes.Element;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -39,16 +37,16 @@ public class PageResultServiceImpl implements PageResultService {
     private final ResultService resultService;
     private final SourceService sourceService;
     private WebDriver driver;
-    private final AppConfig appConfig;
+    private final AppVariable appVariable;
 
     public PageResultServiceImpl(PageResultRepository pageResultRepository,
                                  QueryService queryService, ResultService resultService,
-                                 SourceService sourceService,AppConfig appConfig) {
+                                 SourceService sourceService, AppVariable appVariable) {
         this.pageResultRepository = pageResultRepository;
         this.queryService = queryService;
         this.resultService = resultService;
         this.sourceService = sourceService;
-        this.appConfig=appConfig;
+        this.appVariable = appVariable;
     }
 
     @Override
@@ -76,7 +74,7 @@ public class PageResultServiceImpl implements PageResultService {
         Query query = new Query();
         query.setName(queryName);
         log.info("Searching for.... " + queryName.trim());
-        System.setProperty("webdriver.chrome.driver", appConfig.getChromeDriver());
+        System.setProperty("webdriver.chrome.driver", appVariable.getChromeDriver());
         driver = new ChromeDriver();
 
 

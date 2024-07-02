@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 @Setter
 @ConfigurationProperties(prefix = "facebook")
 public class FacebookVariable {
-    private String searchBar;
+    private String searchField;
     private String loginEmail; //
     private String emailField;
     private String passwordField;

@@ -1,6 +1,6 @@
 package co.za.access.Profiler.facebookSearch.service;
 
-import co.za.access.Profiler.config.AppConfig;
+import co.za.access.Profiler.config.AppVariable;
 import co.za.access.Profiler.config.FacebookVariable;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.*;
@@ -19,17 +19,17 @@ public class FacebookServiceImpl implements FacebookService {
     private WebDriver driver;
     private WebDriverWait wait;
 
-    private final AppConfig appConfig;
+    private final AppVariable appVariable;
     private final FacebookVariable facebookVariable;
 
-    public FacebookServiceImpl(AppConfig appConfig, FacebookVariable facebookVariable) {
-        this.appConfig = appConfig;
+    public FacebookServiceImpl(AppVariable appVariable, FacebookVariable facebookVariable) {
+        this.appVariable = appVariable;
         this.facebookVariable = facebookVariable;
     }
 
     private void openFacebook() {
         log.info("Loading chrome driver...");
-        System.setProperty("webdriver.chrome.driver", appConfig.getChromeDriver());
+        System.setProperty("webdriver.chrome.driver", appVariable.getChromeDriver());
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--disable-notifications");
         options.addArguments("--start-maximized");
@@ -46,13 +46,13 @@ public class FacebookServiceImpl implements FacebookService {
         rejectCookies();
         logIntoFacebook();
         try {
-            wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(facebookVariable.getSearchBar())));
+            wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(facebookVariable.getSearchField())));
 
-            WebElement searchBar = driver.findElement(By.cssSelector(facebookVariable.getSearchBar()));
+            WebElement searchBar = driver.findElement(By.cssSelector(facebookVariable.getSearchField()));
             searchBar.sendKeys(name);
             searchBar.sendKeys(Keys.ENTER);
 
-            filterBy("Gauteng");
+//            filterBy("Gauteng");
             driver.quit();
             return "found " + name;
         } catch (NoSuchElementException nsee) {
@@ -76,18 +76,19 @@ public class FacebookServiceImpl implements FacebookService {
         } catch (NoSuchElementException nsee) {
             log.error("Cookies Button not found... Proceeding with operations");
         }
+
     }
 
     private void logIntoFacebook() throws NoSuchElementException, IllegalArgumentException {
         try {
-            log.info("Logging into Facebook as, {} ", facebookVariable.getLoginEmail());
+            log.info("Logging into Facebook as, {} ", appVariable.getLoginEmail());
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(facebookVariable.getEmailField())));
             WebElement emailField = driver.findElement(By.id(facebookVariable.getEmailField()));
             WebElement passwordField = driver.findElement(By.id(facebookVariable.getPasswordField()));
             WebElement loginBtn = driver.findElement(By.name(facebookVariable.getLoginBtn()));
 
-            emailField.sendKeys(facebookVariable.getLoginEmail());
-            passwordField.sendKeys(facebookVariable.getLoginPassword());
+            emailField.sendKeys(appVariable.getLoginEmail());
+            passwordField.sendKeys(appVariable.getLoginPassword());
             loginBtn.submit();
         } catch (NoSuchElementException nsee) {
             log.error("No such element found! Logging in failed!", nsee);
@@ -116,4 +117,8 @@ public class FacebookServiceImpl implements FacebookService {
             log.error("Time out exception, check your network or people button not found!", toe);
         }
     }
+
+
+
+
 }
