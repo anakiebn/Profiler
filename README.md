@@ -1,6 +1,6 @@
 # Profiler
 
-I call it the Profiler because it scrapes any digital data about someone and performs all the background checks automatically to build a profile. It's aim is to produce results with 90+ percent accuracy, such as phone numbers, addresses and work status. It could be dangerous, so use it cautiously. However, I don't consider it unethical, as all the data it could ever find was exposed by the user to the internet in the first place; all it does is organize it.
+I call it the Profiler because it scrapes any digital data about someone and performs all the background checks automatically to build a profile. Its aim is to produce results with 90+ percent accuracy, such as phone numbers, addresses and work status. It could be dangerous, so use it cautiously. However, I don't consider it unethical, as all the data it could ever find was exposed by the user to the internet in the first place; all it does is organize it.
 
 # Progress...
 
