@@ -8,13 +8,18 @@ So at the moment I can scrap all google result of a particular target and save t
 
 I haven't done any data processing yet, but NLP is the great choice, a little bit if stanford CoreNLP and Spring.ai will do the trick.
 
-In there, I can also automatically log into facebook and linkedin and search our targets. But due to other priotities, I've stopped here. Wait for more updates.
+In there, I can also automatically log into facebook and linkedin and search our targets. But due to other priotities, I've stopped here. Wait for more updates.Should you choose to contribute, you where to find me.
 
-Should you choose to contribute, you where to find me.
+
+## Demo
+
+Watch the demo video:
+
+<iframe width="560" height="315" src="https://youtu.be/C6EK44oAwZ8?si=cCG7iHNNgqceLIbc" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 # Inspiration
 
-I have long lost friends to find, also it's inspiration from movies. 
+I have long lost friends to find, also I got the inspiration from movies. 
 Realising fiction is my goal. So instead of waiting for someone else to give me their system, I'm making mine.
 
 
