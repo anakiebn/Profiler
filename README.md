@@ -6,22 +6,16 @@ I call it the Profiler because it scrapes any digital data about someone and per
 
 So at the moment I can scrap all google result of a particular target and save them in the database, should I repeat the search, instead of scrapping from google, it will load the results from db so I can process it.
 
-I haven't done any data processing yet, but NLP is the great choice, a little bit if stanford CoreNLP and Spring.ai will do the trick.
+I haven't done any data processing yet, but NLP is the great choice, a little bit of Stanford CoreNLP and Spring.ai will do the trick.
 
-In there, I can also automatically log into facebook and linkedin and search our targets. But due to other priotities, I've stopped here. Wait for more updates.Should you choose to contribute, you where to find me.
-
+In there, I can also automatically log into Facebook and LinkedIn and search our targets. But due to other priorities, I've stopped here. Wait for more updates. Should you choose to contribute, you know where to find me.
 
 ## Demo
 
 Watch the demo video:
 
-<iframe width="560" height="315" src="https://youtu.be/C6EK44oAwZ8?si=cCG7iHNNgqceLIbc" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/C6EK44oAwZ8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 # Inspiration
 
-I have long lost friends to find, also I got the inspiration from movies. 
-Realising fiction is my goal. So instead of waiting for someone else to give me their system, I'm making mine.
-
-
-
-
+I have long lost friends to find, also I got the inspiration from movies. Realizing fiction is my goal. So instead of waiting for someone else to give me their system, I'm making mine.
