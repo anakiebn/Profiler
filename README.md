@@ -14,7 +14,7 @@ In there, I can also automatically log into Facebook and LinkedIn and search our
 
 Watch the demo video:
 
-<iframe width="560" height="315" src="https://www.youtube.com/watch/C6EK44oAwZ8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embeded/C6EK44oAwZ8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 # Inspiration
 
