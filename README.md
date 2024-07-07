@@ -15,12 +15,12 @@ I have long lost friends to find, also I got the inspiration from movies. Realiz
 
 ### Google Search
 
-- You can search your person.
+- You can search your person automatically.
   
 ![google_search](https://github.com/anakiebn/Profiler/blob/main/Screenshot%20(37).png)
 
 ### Json Data
 
-- You can do whatever you want with with this data, It's usable in JSON.
+- You can do whatever you want with this data, it's usable in JSON.
   
-![json_data](https://github.com/anakiebn/Profiler/blob/main/Screenshot%20(37).png)
+![json_data](https://github.com/anakiebn/Profiler/blob/main/Screenshot%20(38).png)
