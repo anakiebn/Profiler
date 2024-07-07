@@ -12,3 +12,6 @@ In there, I can also automatically log into Facebook and LinkedIn and search our
 
 ## Inspiration
 I have long lost friends to find, also I got the inspiration from movies. Realizing fiction is my goal. So instead of waiting for someone else to give me their system, I'm making mine.
+
+
+![google_search](https://github.com/anakiebn/OnlineBakeryShoppingSytem/blob/a1de62efe30e2201e8e1c5ef415df3f45eca5545/welcom%20p.png)
