@@ -13,13 +13,15 @@ In there, I can also automatically log into Facebook and LinkedIn and search our
 ## Inspiration
 I have long lost friends to find, also I got the inspiration from movies. Realizing fiction is my goal. So instead of waiting for someone else to give me their system, I'm making mine.
 
-### Google Search
+## Demo
+
+#### Google Search
 
 - You can search your person automatically.
   
 ![google_search](https://github.com/anakiebn/Profiler/blob/main/Screenshot%20(37).png)
 
-### Json Data
+#### Json Data
 
 - You can do whatever you want with this data, it's usable in JSON.
   
