@@ -7,7 +7,7 @@ So at the moment I can scrape all Google results of a particular target and save
 
 I haven't done any data processing yet, but NLP is the great choice, a little bit of Stanford CoreNLP and Spring.ai will do the trick.
 
-In there, I can also automatically log into Facebook and LinkedIn and search our targets. But due to other priorities, I've stopped here. Wait for more updates. Should you choose to contribute, you know where to find me.
+In there, I can also automatically log into Facebook and LinkedIn and search our targets. But due to other priorities, I've stopped here. Wait for more updates. 
 
 
 ## Inspiration
@@ -26,3 +26,5 @@ I have long lost friends to find, also I got the inspiration from movies. Realiz
 - You can do whatever you want with this data, it's usable in JSON.
   
 ![json_data](https://github.com/anakiebn/Profiler/blob/main/Screenshot%20(38).png)
+
+Profiler © 2024 by Anakie Mamba is licensed under Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International 
