@@ -27,4 +27,3 @@ I have long lost friends to find, also I got the inspiration from movies. Realiz
   
 ![json_data](https://github.com/anakiebn/Profiler/blob/main/Screenshot%20(38).png)
 
-Profiler © 2024 by Anakie Mamba is licensed under Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International 
