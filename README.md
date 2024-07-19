@@ -13,6 +13,18 @@ In there, I can also automatically log into Facebook and LinkedIn and search our
 ## Inspiration
 I have long lost friends to find, also I got the inspiration from movies. Realizing fiction is my goal. So instead of waiting for someone else to give me their system, I'm making mine.
 
+
+
+## Key Tools
+
+I tried using public APIs but they were restricting so I resorted in automation libraries.
+
+- Selenium for automation
+- Jsoup for better html parsing
+- Maven
+- Java
+- Springboot
+
 ## Demo
 
 #### Google Search
