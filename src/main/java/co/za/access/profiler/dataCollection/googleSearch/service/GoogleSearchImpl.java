@@ -111,13 +111,15 @@ public class GoogleSearchImpl implements GoogleSearch {
             Set<Result> searchResults = convertElementsToResult(); // save results to database
             PageResult pr = new PageResult(queryName, searchResults, noOfPages);
             searchResults.forEach(r -> r.setPageResult(pr)); // linking results with pageResult
-
+//            resultService.saveAll(searchResults);
             return pageResultRepository.save(pr); // turns all the results into page result
         } catch (Exception e) {
             log.error("Error while searching target from Google", e);
         } finally {
             if (driver != null) {
-                driver.quit();
+
+                System.out.println("Quit...");
+//                driver.quit();
             }
         }
         return null;
@@ -129,12 +131,16 @@ public class GoogleSearchImpl implements GoogleSearch {
         Element element = doc.body();
         List<Element> results = element.select(googleVariable.getResults()).stream().distinct().collect(Collectors.toList());
 
+        System.out.println("t-14 t-normal\n" +
+                "                  t-black--light");
         results.forEach(e -> log.info("Result: \n{}", e.html()));
         log.info("Extraction was successful...");
         return results;
     }
 
     private Set<Result> convertElementsToResult() {
+
+
         return resultElements.stream()
                 .filter(e -> !e.select(googleVariable.getResultTitle()).text().isBlank()
                         && !e.select(googleVariable.getResultDescription()).text().isBlank()
@@ -149,6 +155,7 @@ public class GoogleSearchImpl implements GoogleSearch {
                     Source src = new Source(srcImg, srcLink, srcName);
                     return new Result(src, title, description, resultImg, null);
                 })
+                .peek(e->log.info("name: {}\ntitle: {}\n\n",e.getSrc().getSrcName(),e.getTitle()))
                 .peek(e -> log.info("Successfully converted element to result with title: {}", e.getTitle()))
                 .distinct()
                 .filter(e -> !e.getSrc().getSrcName().isBlank() && !e.getTitle().isBlank() && !e.getDescription().isBlank())
@@ -164,11 +171,15 @@ public class GoogleSearchImpl implements GoogleSearch {
                 WebElement next = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(googleVariable.getNextBtn())));
                 ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", next);
                 ((JavascriptExecutor) driver).executeScript("arguments[0].click();", next); // click the link to the next page
+
+
+
+
             } catch (NoSuchElementException e) {
                 log.info("Scrapped all results...");
                 break; // if the next page section is not found then, this means you've reached the end, no more results to scrap
             } catch (TimeoutException e) {
-                log.error("Timeout! Slow internet", e);
+                log.error("Timeout! Slow internet");
                 log.info("Exiting the program! Scrapped all results...");
                 break;
             } catch (Exception e) {

@@ -1,15 +1,24 @@
 package co.za.access.profiler.dataCollection.linkedinSearch.service;
 
 import co.za.access.profiler.config.AppVariable;
+import co.za.access.profiler.config.CookieData;
 import co.za.access.profiler.config.LinkedinVariable;
+import co.za.access.profiler.dataCollection.linkedinSearch.model.Experience;
 import co.za.access.profiler.util.Interact;
+import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Service;
+
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,77 +36,159 @@ public class LinkedinServiceImpl implements LinkedinService {
         this.appVariable = appVariable;
     }
 
+    public void openLinkedin(List<CookieData> cookieDataList) {
+        try {
+            log.info("Loading chrome driver...");
+            System.setProperty("webdriver.chrome.driver", appVariable.getChromeDriver());
+            driver = new ChromeDriver(Interact.options()); // open chrome using these option
+            wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+            interact = new Interact(driver, wait);
+            driver.get("https://www.linkedin.com");
+            if (cookieDataList != null) {
+                cookieDataList.forEach(cookie -> driver.manage().addCookie(interact.addCookie(cookie)));
+                driver.navigate().refresh();
+            }
 
-    public void openLinkedin(){
-        log.info("Loading chrome driver...");
-        System.setProperty("webdriver.chrome.driver", appVariable.getChromeDriver());
-        driver = new ChromeDriver(Interact.options()); // open chrome using these option
-        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        driver.get("https://www.linkedin.com/uas/login?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Ffeed%2F");
-        interact=new Interact(driver,wait);
+
+        } catch (IllegalArgumentException iex) {
+            iex.printStackTrace();
+            log.error(iex.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
-
 
     /**
      * This method performs LinkedIn search operation, it logs into the site first then it searches the person
      *
      * @param targetName - Name of the person you want to search
-     *
      */
 
     @Override
-    public String linkedinSearch(String targetName) {
-        openLinkedin(); // this method will open LinkedIn
-        login(); // then logs in using the provided details
-        interact.sendInput(By.cssSelector(linkedinVariable.getSearchField()),targetName,"search",false,true); // presses `search` button
-        interact.clickBtn(By.cssSelector(linkedinVariable.getSeeAllPeopleResultBtn()),false,"see all people result button"); // presses `see all people` button
+    public String linkedinSearch(String targetName, List<CookieData> cookieDataList) {
+        if (cookieDataList == null) {
+            openLinkedin(null); // this method will open LinkedIn
+            login(); // then logs in using the provided details
 
-        List<WebElement> people = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy((By.cssSelector(linkedinVariable.getResult()))));
+        } else {
+            openLinkedin(cookieDataList);
+        }
 
-
-        return people.stream().map(e->{
-            e.click();
-            WebElement name=wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(linkedinVariable.getTargetName())));
-            driver.navigate().back();
-            return name.getTagName();
-        }).peek(e-> {
-            System.out.println("Names: "+e);
-        }).collect(Collectors.joining("\n"));
+        interact.sendInput(By.cssSelector(linkedinVariable.getSearchField()), targetName, "search", false, true); // presses `search` button
+        interact.clickBtn(By.cssSelector(linkedinVariable.getSeeAllPeopleResultBtn()), false, "see all people result button"); // presses `see all people` button
+        return findTextFromElement(targetName);
     }
 
 
     /**
      * This method performs login operations.
-     *
      */
 
     private void login() {
-        interact.sendInput(By.id(linkedinVariable.getEmailField()),appVariable.getLoginEmail(),"email",false,false);
-        interact.sendInput(By.id(linkedinVariable.getPasswordField()),appVariable.getLoginPassword(),"password",false,false);
-        interact.clickBtn(By.cssSelector(linkedinVariable.getSignIn()),true,"login");
+        interact.sendInput(By.id(linkedinVariable.getEmailField()), appVariable.getLoginEmail(), "email", false, false);
+        interact.sendInput(By.id(linkedinVariable.getPasswordField()), appVariable.getLoginPassword(), "password", false, false);
+        interact.clickBtn(By.cssSelector(linkedinVariable.getSignIn()), true, "login");
     }
 
-    private String findTextFromElement(){
-        try {
-            List<WebElement> people = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy((By.cssSelector(linkedinVariable.getResult()))));
 
+    private List<Document> allPages(String targetName) {
 
-            return people.stream().map(WebElement::getText).peek(e -> {
-                System.out.println("Names: " + e);
-            }).collect(Collectors.joining("\n"));
-        }catch (NoSuchElementException | TimeoutException | StaleElementReferenceException nsee){
-            log.error(nsee.getMessage());
+        List<Document> doc = new ArrayList<>();
+        int pgNo = 1; // start from page 1
+        int i = driver.getCurrentUrl().lastIndexOf("=");  //Get search id, apparently each search has an id
+        String searchId = driver.getCurrentUrl().substring(i + 1);
+        log.info("Current search Id is {}", searchId);
+
+        while (true) {
+
+            try {
+                log.info("Extracting page {} html", pgNo);
+                doc.add(Jsoup.parse(driver.getPageSource()));
+                if (Jsoup.parse(driver.getPageSource()).body().text().contains("No results found")) {
+                    log.info("Search complete!");
+                    break;
+                }
+
+                clickNext(targetName, ++pgNo, searchId);
+
+            } catch (Exception e) {
+                log.error("Error thrown while extracting pages:\n {}", e.getMessage());
+                break;
+            }
         }
-        return "No results";
+        return doc;
+    }
+
+    private String findTextFromElement(String targetName) {
+        log.info("getting targets info");
+//        log.info("No of pages: {}", allPages(targetName).size());
+
+        return allPages(targetName).stream().flatMap(document -> document.select(linkedinVariable.getResult()).stream())
+                .filter(e ->
+                        e.select(linkedinVariable.getPersonLink()).attr("href").startsWith(linkedinVariable.getValidLink())
+                ).map(e -> {
+                    String url = e.select(linkedinVariable.getPersonLink()).attr("href"); // get each persons link
+                    log.info("Visiting : {}", url);
+                    driver.navigate().to(url); //  visit targets profile
+                    Document doc = Jsoup.parse(driver.getPageSource());
+                    String profileName = doc.select(linkedinVariable.getTargetName()).text();
+                    String imgLink = doc.select(linkedinVariable.getProfilePicture().replace("%s", profileName)).attr("src");
+                    getExperience(doc.select(linkedinVariable.getExperience()));
+
+                    return profileName;
+                }).peek(n -> log.info("Accessing {}'s profile\n", n)).collect(Collectors.joining("\n"));
+
     }
 
 
-    public void turnIntoModel(){
+    public List<Experience> getExperience(Elements elements) {
+
+       return elements.stream().map(e->{
+
+        try{
+            Element location=e.selectFirst(linkedinVariable.getLocation());
+            log.info("This is the html per experience \n{}\n",location.html());
+        }catch (NullPointerException nullPointerException){
+            log.info("No such element");
+        }
+
+           return new Experience();
+       }).toList();
+    }
+
+    /**
+     * I tried to click the next button by just clicking it, unfortunately I couldn't so, I've implemented this logic
+     *
+     * @param name   - This the name of you are searching
+     * @param pageNo - Page number you want to locate
+     * @param sid    - Search id, All searches have a unique id
+     */
+
+    private void clickNext(String name, int pageNo, String sid) {
+        try {
+            log.info("Moving to the next page");
+            String link = "https://www.linkedin.com/search/results/people/?keywords=" +
+                    name.replace(" ", "%20") +
+                    "&origin=GLOBAL_SEARCH_HEADER&page=" +
+                    pageNo +
+                    "&sid=" +
+                    sid;
+
+            driver.navigate().to(link);
+        } catch (Exception e) {
+            log.error("Error occurred while trying to move to the next page");
+        }
+
+    }
 
 
-        // get picture
-        // click person
-        // get title
+    public void turnIntoModel() {
+
+
+        // get picture - Done
+        // click person - Done
+        // get title - Done
         /// get current position
         // get contact info
         // get address
@@ -105,9 +196,14 @@ public class LinkedinServiceImpl implements LinkedinService {
         //get experience
         // education
 
-
-
     }
 
+    @PreDestroy
+    public void cleanUp() {
+        if (driver != null) {
+            driver.close();
+            log.info("Driver closed!");
+        }
+    }
 }
 

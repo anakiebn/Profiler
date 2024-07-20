@@ -2,16 +2,17 @@ package co.za.access.profiler.dataCollection.facebookSearch.service;
 
 import co.za.access.Profiler.config.FacebookVariable;
 import co.za.access.profiler.config.AppVariable;
+import co.za.access.profiler.config.CookieData;
 import co.za.access.profiler.util.Interact;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -30,42 +31,51 @@ public class FacebookServiceImpl implements FacebookService {
         this.facebookVariable = facebookVariable;
     }
 
-    private void openFacebook() {
+    private void openFacebook(List<CookieData> cookieDataList) {
         log.info("Loading chrome driver...");
         System.setProperty("webdriver.chrome.driver", appVariable.getChromeDriver());
         driver = new ChromeDriver(Interact.options());
-      int TIMEOUT = 30;
+        int TIMEOUT = 30;
         wait = new WebDriverWait(driver, Duration.ofSeconds(TIMEOUT));
         log.info("Opening Facebook...");
-        driver.get("https://www.facebook.com?locale=en");
-        interact=new Interact(driver,wait);
+        interact = new Interact(driver, wait);
+        driver.get("https://www.facebook.com");
+
+        if (cookieDataList != null) {
+            cookieDataList.forEach(cookie -> driver.manage().addCookie(interact.addCookie(cookie)));
+            driver.navigate().refresh();
+
+        }
+
     }
 
     @Override
-    public final String searchPerson(String name) {
-        openFacebook();
-        interact.clickBtn(By.id(facebookVariable.getCookieWindow()),false,"cookie"); // rejecting cookies
-        logIntoFacebook();
-        interact.sendInput(By.cssSelector(facebookVariable.getSearchField()),name,"search",false,true);
+    public final String searchPerson(String name, List<CookieData> cookieDataList) {
+        openFacebook(cookieDataList);
+        if(cookieDataList==null){ // If you are not using cookies for authentication
+            interact.clickBtn(By.id(facebookVariable.getCookieWindow()), false, "cookie"); // rejecting cookies
+            logIntoFacebook();
+        }
 
-            wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(facebookVariable.getSearchField())));
+        interact.sendInput(By.cssSelector(facebookVariable.getSearchField()), name, "search", false, true);
         try {
             Thread.sleep(Duration.ofSeconds(6).toMillis());
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
-        }finally {
-            if(driver!=null){
+        } finally {
+            if (driver != null) {
                 driver.quit();
             }
         }
         return "Search complete";
     }
 
-    private void logIntoFacebook(){
-            log.info("Logging into Facebook as, {} ", appVariable.getLoginEmail());
-            interact.sendInput(By.id(facebookVariable.getEmailField()),appVariable.getLoginEmail(),"email",false,false); // insert email
-            interact.sendInput(By.id(facebookVariable.getPasswordField()),appVariable.getLoginPassword(),"password",false,false); // insert password
-            interact.clickBtn(By.name(facebookVariable.getLoginBtn()),true,"login"); // click login button
+    private void logIntoFacebook() {
+        log.info("Logging into Facebook as, {} ", appVariable.getLoginEmail());
+        interact.sendInput(By.id(facebookVariable.getEmailField()), appVariable.getLoginEmail(), "email", false, false); // insert email
+        interact.sendInput(By.id(facebookVariable.getPasswordField()), appVariable.getLoginPassword(), "password", false, false); // insert password
+        interact.clickBtn(By.name(facebookVariable.getLoginBtn()), true, "login"); // click login button
+
     }
 
     private void filterBy(String by) {
@@ -88,8 +98,6 @@ public class FacebookServiceImpl implements FacebookService {
             log.error("Time out exception, check your network or people button not found!", toe);
         }
     }
-
-
 
 
 }

@@ -1,4 +1,4 @@
-package co.za.access.Profiler.dataProcessing.model;
+package co.za.access.profiler.dataProcessing.model;
 
 import jakarta.persistence.*;
 import lombok.*;

@@ -1,4 +1,4 @@
-package co.za.access.Profiler;
+package co.za.access.profiler;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;

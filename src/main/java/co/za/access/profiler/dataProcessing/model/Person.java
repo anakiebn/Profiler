@@ -1,4 +1,4 @@
-package co.za.access.Profiler.dataProcessing.model;
+package co.za.access.profiler.dataProcessing.model;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -53,10 +53,6 @@ public class Person {
     @OneToMany(cascade = CascadeType.ALL)
     private final List<Career> careers;
 
-    public Person(){
-        this(null,null,null,null,null,null,null,null,false,0,null);
-
-    }
     @Override
     public String toString() {
         return getClass().getSimpleName() + "(" +

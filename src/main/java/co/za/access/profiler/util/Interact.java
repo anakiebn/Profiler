@@ -1,11 +1,16 @@
 package co.za.access.profiler.util;
 
+import co.za.access.profiler.config.CookieData;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.asm.Advice;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.io.File;
+import java.sql.Date;
 import java.time.Duration;
 
 @Slf4j
@@ -82,6 +87,19 @@ public final class Interact {
         } catch (IllegalArgumentException iae) {
             log.error("Invalid argument on {} field not found...\n {}", fieldName, iae.getMessage());
         }
+    }
+
+    public Cookie addCookie(CookieData cookieData){
+        return new Cookie.Builder(cookieData.getName(),cookieData.getValue())
+                .domain(cookieData.getDomain())
+                .path(cookieData.getPath())
+                .sameSite(cookieData.getSameSite())
+                .isHttpOnly(cookieData.isHttpOnly())
+                .expiresOn(cookieData.getExpiry())
+                .isSecure(cookieData.isSecure())
+                .build()
+                ;
+
     }
 
 
