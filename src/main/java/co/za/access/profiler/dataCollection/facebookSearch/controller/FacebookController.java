@@ -3,6 +3,7 @@ package co.za.access.profiler.dataCollection.facebookSearch.controller;
 
 import co.za.access.profiler.config.CookieData;
 import co.za.access.profiler.dataCollection.facebookSearch.service.FacebookService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,8 @@ public class FacebookController {
     private final FacebookService facebookService;
 
     public FacebookController(FacebookService facebookService) {
+
+
         this.facebookService = facebookService;
     }
 

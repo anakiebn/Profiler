@@ -6,11 +6,14 @@ import co.za.access.profiler.config.LinkedinVariable;
 import co.za.access.profiler.dataCollection.linkedinSearch.model.Experience;
 import co.za.access.profiler.util.Interact;
 import jakarta.annotation.PreDestroy;
+import lombok.Getter;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.jsoup.select.NodeFilter;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -20,7 +23,10 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Slf4j
@@ -75,8 +81,8 @@ public class LinkedinServiceImpl implements LinkedinService {
             openLinkedin(cookieDataList);
         }
 
-        interact.sendInput(By.cssSelector(linkedinVariable.getSearchField()), targetName, "search", false, true); // presses `search` button
-        interact.clickBtn(By.cssSelector(linkedinVariable.getSeeAllPeopleResultBtn()), false, "see all people result button"); // presses `see all people` button
+//        interact.sendInput(By.cssSelector(linkedinVariable.getSearchField()), targetName, "search", false, true); // presses `search` button
+//        interact.clickBtn(By.cssSelector(linkedinVariable.getSeeAllPeopleResultBtn()), false, "see all people result button"); // presses `see all people` button
         return findTextFromElement(targetName);
     }
 
@@ -105,12 +111,19 @@ public class LinkedinServiceImpl implements LinkedinService {
             try {
                 log.info("Extracting page {} html", pgNo);
                 doc.add(Jsoup.parse(driver.getPageSource()));
+                log.info("Page {} document created!",pgNo);
                 if (Jsoup.parse(driver.getPageSource()).body().text().contains("No results found")) {
                     log.info("Search complete!");
                     break;
                 }
 
-                clickNext(targetName, ++pgNo, searchId);
+
+
+                    log.info("Limited search to {} pages",pgNo);
+                    break;
+
+
+//                clickNext(targetName, ++pgNo, searchId);
 
             } catch (Exception e) {
                 log.error("Error thrown while extracting pages:\n {}", e.getMessage());
@@ -124,37 +137,49 @@ public class LinkedinServiceImpl implements LinkedinService {
         log.info("getting targets info");
 //        log.info("No of pages: {}", allPages(targetName).size());
 
-        return allPages(targetName).stream().flatMap(document -> document.select(linkedinVariable.getResult()).stream())
-                .filter(e ->
-                        e.select(linkedinVariable.getPersonLink()).attr("href").startsWith(linkedinVariable.getValidLink())
-                ).map(e -> {
-                    String url = e.select(linkedinVariable.getPersonLink()).attr("href"); // get each persons link
-                    log.info("Visiting : {}", url);
-                    driver.navigate().to(url); //  visit targets profile
-                    Document doc = Jsoup.parse(driver.getPageSource());
-                    String profileName = doc.select(linkedinVariable.getTargetName()).text();
-                    String imgLink = doc.select(linkedinVariable.getProfilePicture().replace("%s", profileName)).attr("src");
-                    getExperience(doc.select(linkedinVariable.getExperience()));
+        driver.navigate().to("https://www.linkedin.com/in/cyril-b-17b3b424/");
+        try {
+            Thread.sleep(5_000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        Document doc = Jsoup.parse(driver.getPageSource());
+        String profileName=driver.findElement(By.cssSelector(linkedinVariable.getTargetName())).getText();
+        String imgLink=driver.findElement(By.cssSelector(linkedinVariable.getProfilePicture().replace("%s", profileName))).getDomAttribute("src");
 
-                    return profileName;
-                }).peek(n -> log.info("Accessing {}'s profile\n", n)).collect(Collectors.joining("\n"));
+        getExperience(doc.select(linkedinVariable.getSection()));
+        return "Name: "+profileName+"\nImage Link: "+imgLink;
+
+
+
+
+//        return allPages(targetName)
+//                .stream()
+//                .flatMap(document -> document.select(linkedinVariable.getResult()).stream())
+//                .filter(e -> e.select(linkedinVariable.getPersonLink()).attr("href").startsWith(linkedinVariable.getValidLink()))
+//                .map(e -> {
+//                    String url = e.select(linkedinVariable.getPersonLink()).attr("href"); // get each persons profile link
+//                    log.info("Visiting : {}", url);
+//                    driver.navigate().to(url); //  visit targets profile
+//                    Document doc = Jsoup.parse(driver.getPageSource());
+//                    String profileName = doc.select(linkedinVariable.getTargetName()).text();
+//                    String imgLink = doc.select(linkedinVariable.getProfilePicture().replace("%s", profileName)).attr("src");
+//                    getExperience(doc.select(linkedinVariable.getExperience()).first());
+//
+//                    return profileName;
+//                }).peek(n -> log.info("Accessing {}'s profile\n", n)).collect(Collectors.joining("\n"));
 
     }
-
-
     public List<Experience> getExperience(Elements elements) {
+        System.out.println("Property: "+linkedinVariable.getHeader());
 
-       return elements.stream().map(e->{
+        elements.forEach(e-> {
 
-        try{
-            Element location=e.selectFirst(linkedinVariable.getLocation());
-            log.info("This is the html per experience \n{}\n",location.html());
-        }catch (NullPointerException nullPointerException){
-            log.info("No such element");
-        }
-
-           return new Experience();
-       }).toList();
+            Element header=e.getE
+            log.info("Begins here:\nHeader: {}\n {}",header.text(),e.html());
+           });
+        //        log.info(element.select(".soRXgxWJJMgZLzjQJfhmoIJTmInhAao").text()+"\n");
+       return null;
     }
 
     /**
@@ -166,6 +191,8 @@ public class LinkedinServiceImpl implements LinkedinService {
      */
 
     private void clickNext(String name, int pageNo, String sid) {
+
+
         try {
             log.info("Moving to the next page");
             String link = "https://www.linkedin.com/search/results/people/?keywords=" +
@@ -201,9 +228,10 @@ public class LinkedinServiceImpl implements LinkedinService {
     @PreDestroy
     public void cleanUp() {
         if (driver != null) {
-            driver.close();
-            log.info("Driver closed!");
+//            driver.close();
+//            log.info("Driver closed!");
         }
+
     }
 }
 

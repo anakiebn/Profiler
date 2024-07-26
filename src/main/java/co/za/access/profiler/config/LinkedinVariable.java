@@ -25,10 +25,13 @@ public class LinkedinVariable {
     private String doneExtracting;
     private String profilePicture;
     private String experience;
+    private String section;
+    private String header;
     private String sameCompanyExperience;
     private String role;
     private String duration;
     private String location;
+    private String personalData;
 
 
 }
