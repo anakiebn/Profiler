@@ -1,4 +1,4 @@
-package co.za.access.Profiler;
+package co.za.access.profiler;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
