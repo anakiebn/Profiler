@@ -26,7 +26,10 @@ public final class Interact {
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--disable-notifications");
         options.addArguments("--start-maximized");
-        options.addArguments("--incognito");
+//        options.addArguments("--incognito");
+//        options.addArguments("--headless");
+//        options.addArguments("--disable-gpu");
+//        options.addArguments("--window-size=1920,1080");
         return options;
     }
 

@@ -9,7 +9,8 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,41 +18,41 @@ public class Person {
     private  Long id;
 
     @Column(nullable = false)
-    private final String name;
-    private final String surname;
+    private String name;
+    private String surname;
 
     @ElementCollection
     @CollectionTable(name = "person_potential_name", joinColumns = @JoinColumn(name = "person_id"))
     @Column(name = "potential_name")
-    private final List<String> potentialNames;
+    private List<String> potentialNames;
 
     @ElementCollection
     @CollectionTable(name = "person_potential_email", joinColumns = @JoinColumn(name = "person_id"))
     @Column(name = "potential_email")
-    private final Set<String> potentialEmail;
+    private Set<String> potentialEmail;
 
     @ElementCollection
     @CollectionTable(name = "person_potential_phone_no", joinColumns = @JoinColumn(name = "person_id"))
     @Column(name = "potential_phone_no")
-    private final Set<String> potentialPhoneNo;
+    private Set<String> potentialPhoneNo;
 
     private int age;
 
     @OneToMany(mappedBy = "person",cascade = CascadeType.ALL)
-    private final Set<SocialMediaAccount> socialMediaAccounts;
+    private Set<SocialMediaAccount> socialMediaAccounts;
 
     @OneToMany(mappedBy = "person",cascade = CascadeType.ALL)
-    private final Set<Address> potentialAddresses;
+    private Set<Address> potentialAddresses;
 
     @OneToMany(mappedBy = "person",cascade = CascadeType.ALL)
-    private final Set<RelatedPerson> relatedPeople;
+    private Set<RelatedPerson> relatedPeople;
 
-    private final boolean employed;
+    private boolean employed;
 
-    private final double accuracy;
+    private double accuracy;
 
     @OneToMany(cascade = CascadeType.ALL)
-    private final List<Career> careers;
+    private List<Career> careers;
 
     @Override
     public String toString() {
