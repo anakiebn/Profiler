@@ -25,6 +25,12 @@ public class FacebookVariable {
     private String declineCookieBtn;
     private String loginWindow;
     private String cookieWindow;
+    private String profile;
+    private String profileLink;
+    private String profileImageLink;
+    private String body;
+    private String images;
+    private String profileName;
 
 }
 
