@@ -41,6 +41,7 @@ public class FacebookController {
             log.info("Expiry " + cookieData.getExpiry());
             log.info("IsSecure " + cookieData.isSecure());
         }
+        log.info("Using cookies ");
         return new ResponseEntity<>(facebookService.searchPerson(name,cookieDataList), HttpStatus.OK);
     }
 
