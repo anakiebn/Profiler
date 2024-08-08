@@ -28,7 +28,7 @@ public class LinkedinVariable {
     private String experienceSection;
     private String companyName;
     private String position;
-    private String positionName;
+    private String positionNamegit ;
 
     private String section;
     private String header;
