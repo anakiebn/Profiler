@@ -22,12 +22,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-git <<<<<<< HEAD
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
-=======
+
 		<!-- https://mvnrepository.com/artifact/org.bytedeco/opencv -->
 		<dependency>
 			<groupId>org.bytedeco</groupId>
@@ -35,7 +35,6 @@ git <<<<<<< HEAD
 			<version>4.9.0-1.5.10</version>
 		</dependency>
 
->>>>>>> feature/add-cookies
 
 		<!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java -->
 		<dependency>
