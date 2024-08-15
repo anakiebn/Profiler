@@ -92,6 +92,31 @@ public final class Interact {
         }
     }
 
+    public WebElement getElement(By by, String elementName) {
+        try {
+            log.info("Locating {}", elementName);
+            WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(by));
+                if(element==null){
+                    throw new NoSuchElementException("Null element");
+                }
+            return element;
+
+        } catch (NoSuchElementException nsee) {
+            log.error("Element {} not found...{}", elementName, nsee.getMessage());
+            throw nsee;
+        } catch (TimeoutException toe) {
+            log.error("Timeout, failed to load {} element..\n", elementName);
+            throw toe;
+        } catch (java.lang.IllegalArgumentException iae) {
+            log.error("Invalid argument for button {} not found...\n", elementName);
+            throw iae;
+        } catch (Exception e) {
+            log.error("Error occurred while {} accessing element", elementName);
+            throw e;
+        }
+
+    }
+
     public Cookie addCookie(CookieData cookieData){
         return new Cookie.Builder(cookieData.getName(),cookieData.getValue())
                 .domain(cookieData.getDomain())

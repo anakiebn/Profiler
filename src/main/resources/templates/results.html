@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Profiles</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            color: #333;
+        }
+        .profile-container {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            margin-bottom: 20px;
+        }
+        .profile-picture {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 20px;
+        }
+        .profile-picture img {
+            width: 100%;
+            height: auto;
+        }
+        .profile-details {
+            flex: 1;
+        }
+        .profile-details h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .profile-details p {
+            margin: 5px 0;
+        }
+        .profile-details .no-image {
+            width: 100px;
+            height: 100px;
+            background-color: #ddd;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+        }
+        .profile-details .no-image span {
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Matching Targets: </h2><br>
+<div th:each="target : ${targets}" class="profile-container">
+    <div class="profile-picture">
+        <img th:if="${target.profileImage != null}" th:src="@{${target.profileImage}}" alt="Profile Picture" />
+        <div th:if="${target.profileImage == null}" class="no-image">
+            <span>No Image</span>
+        </div>
+    </div>
+    <div class="profile-details">
+        <h2 th:text="${target.name}">John Doe</h2>
+        <p>Email: <span th:text="${target.email}">johndoe@example.com</span></p>
+        <p>Phone: <span th:text="${target.phone}">123-456-7890</span></p>
+        <p>Address: <span th:text="${target.address}">123 Main St, Anytown, USA</span></p>
+    </div>
+</div>
+</body>
+</html>

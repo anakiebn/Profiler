@@ -1,0 +1,140 @@
+/* Styling for the header */
+header {
+    background-color: #222;
+    color: rgb(241, 243, 241);
+    padding: 10px 20px;
+    text-align: left;
+}
+
+/* Styling for the search bar */
+.search-bar {
+    margin: 20px 0;
+}
+
+/* Styling for the navigation bar */
+.sidenav {
+    height: calc(100%); /* Adjust height to be below header */
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 75px; /* Start below the header */
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+}
+
+.sidenav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidenav a:hover {
+    color: #f1f1f1;
+}
+
+.sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+/* Styling for circular progress bars */
+.progress-container {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.progress-bar-container {
+    margin: 20px;
+    text-align: center;
+}
+
+.progress-bar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.progress-bar::before {
+    counter-reset: percentage var(--progress-value);
+    content: counter(percentage) '%';
+    position: absolute;
+    font-size: 1.2em;
+    color: #4aa1cd;
+}
+
+/* Custom progress bar animations */
+@keyframes google-progress {
+    to { --progress-value: 75; }
+}
+
+@keyframes facebook-progress {
+    to { --progress-value: 50; }
+}
+
+@keyframes linkedin-progress {
+    to { --progress-value: 90; }
+}
+
+.google {
+    --progress-value: 75;
+    background:
+        radial-gradient(closest-side, white 79%, transparent 80% 100%),
+        conic-gradient( #97d8f8 calc(var(--progress-value) * 1%), #e6d3d3 0);
+    animation: google-progress
+    2s 1 forwards;
+}
+
+.facebook {
+    --progress-value: 50;
+    background:
+        radial-gradient(closest-side, white 79%, transparent 80% 100%, white 0),
+        conic-gradient(#97d8f8 calc(var(--progress-value) * 1%), #e6d3d3 0);
+    animation: facebook-progress 2s 1 forwards;
+}
+
+.linkedin {
+    --progress-value: 90;
+    background:
+        radial-gradient(closest-side, white 79%, transparent 80% 100%, white 0),
+        conic-gradient(#97d8f8  calc(var(--progress-value) * 1%), #e6d3d3 0);
+    animation: linkedin-progress 2s 1 forwards;
+}
+
+.x {
+    --progress-value: 90;
+    background:
+        radial-gradient(closest-side, white 79%, transparent 80% 100%, white 0),
+        conic-gradient(#97d8f8  calc(var(--progress-value) * 1%), #e6d3d3 0);
+    animation: linkedin-progress 2s 1 forwards;
+}
+
+.instagram {
+    --progress-value: 90;
+    background:
+        radial-gradient(closest-side, white 79%, transparent 80% 100%, white 0),
+        conic-gradient(#97d8f8  calc(var(--progress-value) * 1%), #e6d3d3 0);
+    animation: linkedin-progress 2s 1 forwards;
+}
+
+/* Styling for the open nav button */
+.open-nav {
+    font-size: 30px;
+    cursor: pointer;
+    color: #6a0640;
+    padding: 10px;
+}
+

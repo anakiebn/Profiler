@@ -3,6 +3,7 @@ package co.za.access.profiler.dataCollection.facebookSearch.controller;
 
 import co.za.access.profiler.config.CookieData;
 import co.za.access.profiler.dataCollection.facebookSearch.service.FacebookService;
+import co.za.access.profiler.dataProcessing.model.Target;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -26,12 +27,12 @@ public class FacebookController {
     }
 
     @GetMapping("/{name}")
-    public ResponseEntity<String> searchPerson(@PathVariable String name) {
+    public ResponseEntity<List<Target>> searchPerson(@PathVariable String name) {
         return new ResponseEntity<>(facebookService.searchPerson(name,null), HttpStatus.OK);
     }
 
     @GetMapping("cookieAuth/{name}")
-    public ResponseEntity<String> searchPerson(@PathVariable String name, @RequestBody List<CookieData> cookieDataList) {
+    public ResponseEntity<List<Target>> searchPerson(@PathVariable String name, @RequestBody List<CookieData> cookieDataList) {
         for (CookieData cookieData : cookieDataList) {
 
             log.info("Domain " + cookieData.getDomain());

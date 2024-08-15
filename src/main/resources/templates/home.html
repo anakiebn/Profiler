@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profiler</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<!-- Header Section -->
+<header>
+    <h1>Profiler</h1>
+</header>
+
+<!-- Search Bar Section -->
+<div class="container">
+    <div class="search-bar d-flex">
+        <input type="text" class="form-control" role="searchbox" placeholder="Target Name">
+        <!-- Added Button -->
+        <button type="button" class="btn btn-primary ml-2" th:onclick="'window.location.href=\'' + @{/facebook/results/} + '\'">
+        Search
+        </button>
+    </div>
+
+    <!-- Navigation Bar Section -->
+    <div id="mySidenav" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <a href="#">Previous Search</a>
+        <a href="#">Successful Match</a>
+        <a href="#">One Site Search</a>
+        <a href="#">Find Target</a>
+    </div>
+
+    <!-- Circular Progress Bars Section -->
+    <div class="progress-container">
+        <div class="progress-bar-container">
+            <div class="progress-bar google">
+                <progress id="google" min="0" max="100" value="75" style="visibility:hidden;height:0;width:0;"></progress>
+            </div>
+            <h4><label for="google">Google Search</label></h4>
+        </div>
+
+        <div class="progress-bar-container">
+            <div class="progress-bar facebook">
+                <progress id="facebook" min="0" max="100" value="50" style="visibility:hidden;height:0;width:0;"></progress>
+            </div>
+            <h4><label for="facebook">Facebook Search</label></h4>
+        </div>
+
+        <div class="progress-bar-container">
+            <div class="progress-bar linkedin">
+                <progress id="linkedin" min="0" max="100" value="90" style="visibility:hidden;height:0;width:0;"></progress>
+            </div>
+            <h4><label for="linkedin">LinkedIn Search</label></h4>
+        </div>
+
+        <div class="progress-bar-container">
+            <div class="progress-bar instagram">
+                <progress id="instagram" min="0" max="100" value="90" style="visibility:hidden;height:0;width:0;"></progress>
+            </div>
+            <h4><label for="instagram">Instagram Search</label></h4>
+        </div>
+
+        <div class="progress-bar-container">
+            <div class="progress-bar x">
+                <progress id="x" min="0" max="100" value="90" style="visibility:hidden;height:0;width:0;"></progress>
+            </div>
+            <h4><label for="x">X Search</label></h4>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="scripts.js"></script>
+</body>
+</html>
