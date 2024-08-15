@@ -26,13 +26,13 @@ public class FacebookController {
         this.facebookService = facebookService;
     }
 
-    @GetMapping("/{name}")
-    public ResponseEntity<List<Target>> searchPerson(@PathVariable String name) {
-        return new ResponseEntity<>(facebookService.searchPerson(name,null), HttpStatus.OK);
+    @GetMapping("/{name}/{noOfPages}")
+    public ResponseEntity<List<Target>> searchPerson(@PathVariable String name,@PathVariable int noOfPages) {
+        return new ResponseEntity<>(facebookService.searchPerson(name,null,noOfPages), HttpStatus.OK);
     }
 
-    @GetMapping("cookieAuth/{name}")
-    public ResponseEntity<List<Target>> searchPerson(@PathVariable String name, @RequestBody List<CookieData> cookieDataList) {
+    @GetMapping("cookieAuth/{name}/{noOfPages}")
+    public ResponseEntity<List<Target>> searchPerson(@PathVariable String name, @RequestBody List<CookieData> cookieDataList,@PathVariable int noOfPages) {
         for (CookieData cookieData : cookieDataList) {
 
             log.info("Domain " + cookieData.getDomain());
@@ -43,7 +43,7 @@ public class FacebookController {
             log.info("IsSecure " + cookieData.isSecure());
         }
         log.info("Using cookies ");
-        return new ResponseEntity<>(facebookService.searchPerson(name,cookieDataList), HttpStatus.OK);
+        return new ResponseEntity<>(facebookService.searchPerson(name,cookieDataList,noOfPages), HttpStatus.OK);
     }
 
 

@@ -20,8 +20,8 @@ public class ResultController {
     private FacebookServiceImpl facebookService;
     @GetMapping("/results/{target}")
     public String getUsers(Model model, @RequestParam("targetName") String targetName) {
-        List<Target> targets = facebookService.searchPerson(targetName,null);
-                model.addAttribute("users", targets);
+//        List<Target> targets = facebookService.searchPerson(targetName,null);
+//                model.addAttribute("users", targets);
         return "results";
     }
 

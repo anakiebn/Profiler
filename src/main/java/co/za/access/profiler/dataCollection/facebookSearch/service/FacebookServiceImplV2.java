@@ -11,25 +11,8 @@ import java.util.List;
 public class FacebookServiceImplV2 implements FacebookService{
 
 
-
     @Override
-    public List<Target> searchPerson(String name, List<CookieData> cookieDataList) {
-
-
+    public List<Target> searchPerson(String name, List<CookieData> cookieDataList, int noOfPages) {
         return null;
-    }
-
-    public void search(){
-
-        HttpClient client=HttpClient
-                .newHttpClient();
-
-
-        HttpRequest request=HttpRequest
-                .newBuilder()
-                .GET()
-
-                .build();
-
     }
 }
