@@ -8,5 +8,5 @@ import java.util.List;
 public interface FacebookService {
 
 
-    List<Target>  searchPerson(String name, List<CookieData> cookieDataList);
+    List<Target>  searchPerson(String name, List<CookieData> cookieDataList,int noOfPages);
 }

@@ -56,14 +56,14 @@ public class FacebookServiceImpl implements FacebookService {
     }
 
     @Override
-    public final List<Target> searchPerson(String target, List<CookieData> cookieDataList) {
+    public final List<Target> searchPerson(String target, List<CookieData> cookieDataList,int noOfPages) {
         openFacebook(cookieDataList, target);
         if (cookieDataList == null) { // If you are not using cookies for authentication
             interact.clickBtn(By.id(facebookVariable.getCookieWindow()), false, "cookie"); // rejecting cookies
             logIntoFacebook();
         }
 
-        scroll(1, 1_000, 1000);
+        scroll(noOfPages);
         log.info("Beginning: \n{}\nEnd",driver.getPageSource());
         Document doc = Jsoup.parse(driver.getPageSource());
 
@@ -109,18 +109,19 @@ public class FacebookServiceImpl implements FacebookService {
         }
     }
 
-    private void scroll(final int noOfPages, final int delayTime, final int pixel) {
-        if (noOfPages > 0) {
-            for (int i = 0; i < noOfPages; i++) {
-                log.info("Scrolled! {}", i + 1);
-                ((JavascriptExecutor) driver).executeScript("window.scrollBy(0, arguments[0]);", pixel);
-            }
+    private void scroll(final int noOfPages) {
+        final int PIXELS=1_000; // from research, 1000 pixels is a page
+        final int DELAY_TIME=2_000; // 2 seconds delay is enough just so the content can finish loading.
+        if (noOfPages > 2) {
+            log.info("Scrolled! {}", noOfPages);
+            ((JavascriptExecutor) driver).executeScript("window.scrollBy(0, arguments[0]);", PIXELS*noOfPages);
+        }
             try {
-                Thread.sleep(delayTime);
+                Thread.sleep(DELAY_TIME);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-        }
+
     }
 
     private void logIntoFacebook() {
