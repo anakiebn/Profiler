@@ -24,7 +24,7 @@ public class PageResult {
 
     private String query;
 
-    @OneToMany(mappedBy = "pageResult", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "pageResult", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
     private Set<Result> results;
 
     @Column(nullable = false)

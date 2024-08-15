@@ -1,4 +1,4 @@
-package co.za.access.Profiler.dataProcessing.model;
+package co.za.access.profiler.dataProcessing.model;
 
 public enum Relationship {
     ROMANTIC("Romantic"),

@@ -1,11 +1,16 @@
 package co.za.access.profiler.util;
 
+import co.za.access.profiler.config.CookieData;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.asm.Advice;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.io.File;
+import java.sql.Date;
 import java.time.Duration;
 
 @Slf4j
@@ -21,7 +26,10 @@ public final class Interact {
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--disable-notifications");
         options.addArguments("--start-maximized");
-        options.addArguments("--incognito");
+//        options.addArguments("--incognito");
+//        options.addArguments("--headless");
+//        options.addArguments("--disable-gpu");
+//        options.addArguments("--window-size=1920,1080");
         return options;
     }
 
@@ -82,6 +90,44 @@ public final class Interact {
         } catch (IllegalArgumentException iae) {
             log.error("Invalid argument on {} field not found...\n {}", fieldName, iae.getMessage());
         }
+    }
+
+    public WebElement getElement(By by, String elementName) {
+        try {
+            log.info("Locating {}", elementName);
+            WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(by));
+                if(element==null){
+                    throw new NoSuchElementException("Null element");
+                }
+            return element;
+
+        } catch (NoSuchElementException nsee) {
+            log.error("Element {} not found...{}", elementName, nsee.getMessage());
+            throw nsee;
+        } catch (TimeoutException toe) {
+            log.error("Timeout, failed to load {} element..\n", elementName);
+            throw toe;
+        } catch (java.lang.IllegalArgumentException iae) {
+            log.error("Invalid argument for button {} not found...\n", elementName);
+            throw iae;
+        } catch (Exception e) {
+            log.error("Error occurred while {} accessing element", elementName);
+            throw e;
+        }
+
+    }
+
+    public Cookie addCookie(CookieData cookieData){
+        return new Cookie.Builder(cookieData.getName(),cookieData.getValue())
+                .domain(cookieData.getDomain())
+                .path(cookieData.getPath())
+                .sameSite(cookieData.getSameSite())
+                .isHttpOnly(cookieData.isHttpOnly())
+                .expiresOn(cookieData.getExpiry())
+                .isSecure(cookieData.isSecure())
+                .build()
+                ;
+
     }
 
 
