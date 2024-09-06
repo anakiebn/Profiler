@@ -41,11 +41,12 @@ public class LinkedinServiceImpl implements LinkedinService {
             driver = new ChromeDriver(Interact.options()); // open chrome using these option
             wait = new WebDriverWait(driver, Duration.ofSeconds(10));
             interact = new Interact(driver, wait);
-            driver.get("https://www.linkedin.com/");
+            driver.get("https://www.linkedin.com/feed/");
             if (cookieDataList != null) {
                 cookieDataList.forEach(cookie -> driver.manage().addCookie(interact.addCookie(cookie)));
                 driver.navigate().refresh();
             }
+
         } catch (IllegalArgumentException iex) {
             log.error("Didn't expect such argument: " + iex.getMessage());
         } catch (WebDriverException w) {
@@ -65,11 +66,10 @@ public class LinkedinServiceImpl implements LinkedinService {
         if (cookieDataList == null) {
             openLinkedin(null); // this method will open LinkedIn
             login(); // then logs in using the provided details
-
         } else {
             openLinkedin(cookieDataList);
         }
-        interact.sendInput(By.cssSelector(linkedinVariable.getSearchField()), targetName, "search", false, true); // presses `search` button
+        interact.sendInput(By.cssSelector(linkedinVariable.getSearchField()), targetName, "search", false, true); // presses `search` button to search our target
         interact.clickBtn(By.cssSelector(linkedinVariable.getSeeAllPeopleResultBtn()), false, "see all people result button"); // presses `see all people` button
         return findTextFromElement(targetName);
     }
@@ -99,17 +99,18 @@ public class LinkedinServiceImpl implements LinkedinService {
                 log.info("Extracting page {} html", pgNo);
                 doc.add(Jsoup.parse(driver.getPageSource()));
                 log.info("Page {} document created!", pgNo);
-                if (Jsoup.parse(driver.getPageSource()).body().text().contains("No results found")) {
+                if (Jsoup.parse(driver.getPageSource()).body().text().contains("No results found")) { // This is the last page shown when there are no more results to show.
                     log.info("Search complete!");
                     break;
                 }
 
+                // Temporal code for testing purposes, normally, we would search all pages concerning our target, some searches go up to 100 pages, imagine!
                 if(pgNo==2){
                     log.info("Limited search to {} pages", pgNo);
                     break;
                 }
 
-                clickNext(targetName, ++pgNo, searchId);
+                clickNext(targetName, ++pgNo, searchId); //  move to the next page
 
             } catch (Exception e) {
                 log.error("Error thrown while extracting pages:\n {}", e.getMessage());
@@ -123,10 +124,10 @@ public class LinkedinServiceImpl implements LinkedinService {
         log.info("getting targets info");
         return allPages(targetName)
                 .stream()
-                .flatMap(document -> document.select(linkedinVariable.getResult()).stream())
-                .filter(e -> e.select(linkedinVariable.getPersonLink()).attr("href").startsWith(linkedinVariable.getValidLink())) // Filter only documents with that have a valid profiler link
-                .map(e -> {
-                    String url = e.select(linkedinVariable.getPersonLink()).attr("href"); // get each persons profile link
+                .flatMap(document -> document.select(linkedinVariable.getResult()).stream()) // now we have all the results of all pages into one long stream.
+                .filter(result -> result.select(linkedinVariable.getPersonLink()).attr("href").startsWith(linkedinVariable.getValidLink())) // Filter only results with that have a valid profile link
+                .map(result -> {
+                    String url = result.select(linkedinVariable.getPersonLink()).attr("href"); // get each persons profile link
                     log.info("Visiting : {}", url);
                     driver.navigate().to(url); //  visit targets profile
                     int retry=0;
@@ -136,11 +137,10 @@ public class LinkedinServiceImpl implements LinkedinService {
                         try {
 
                             profileName = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(linkedinVariable.getTargetName()))).getText();
-//                            String pSelector=linkedinVariable.getProfilePicture().replace("%s",profileName);
                             String pSelector=linkedinVariable.getProfilePicture();
 
                             log.info("Image selector: "+pSelector);
-                            profilePic = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(pSelector))).getAttribute("src");
+                            profilePic = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(linkedinVariable.getProfilePicture()))).getAttribute("src");
 
 //                            getExperience(wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(linkedinVariable.getExperienceSection()))));
 
@@ -148,7 +148,7 @@ public class LinkedinServiceImpl implements LinkedinService {
                         } catch (TimeoutException toe) {
                             if(retry++==3){
                                 log.info("Failed to process profile");
-                                return "Name: " + profileName==null?"Failed to view profile":profileName + "\nImage Link: " + profilePic==null?"Failed to load img":profilePic;
+                                return "Name: " + profileName + "\nImage Link: " + profilePic;
                             }
                             log.info("Timeout exception... Still waiting for profile to load:");
 

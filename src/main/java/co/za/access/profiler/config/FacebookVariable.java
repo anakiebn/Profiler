@@ -1,4 +1,4 @@
-package co.za.access.Profiler.config;
+package co.za.access.profiler.config;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -31,6 +31,26 @@ public class FacebookVariable {
     private String body;
     private String images;
     private String profileName;
+    private String about;
+    private String aboutSection;
+
+    private String workAndCollege;
+    private String workAndEducationParam;
+    private String placeLivedParam;
+    private String contactParam;
+    private String relationshipParam;
+
+    private String workNameAndPlaceName;
+    private String workStartAndEndDate;
+    private String highSchool;
+    private String current;
+    private String currentCity;
+    private String hometown;
+    private String placeName;
+    private String contactInfo;
+    private String relationship;
+    private String family;
+    private String connectionMemberName;
+    private String relationshipType;
 
 }
-
