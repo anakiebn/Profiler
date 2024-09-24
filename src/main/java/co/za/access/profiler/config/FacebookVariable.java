@@ -39,8 +39,9 @@ public class FacebookVariable {
     private String placeLivedParam;
     private String contactParam;
     private String relationshipParam;
+    private String loggedIn;
 
-    private String workNameAndPlaceName;
+    private String workAndCollegeName;
     private String workStartAndEndDate;
     private String highSchool;
     private String current;

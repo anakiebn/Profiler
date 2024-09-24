@@ -81,6 +81,22 @@ public final class Interact {
         }
 
     }
+
+
+    public boolean elementVisible(By by,String elementName){
+        try {
+            log.info("Locating {}", elementName);
+            WebElement button = wait.until(ExpectedConditions.visibilityOfElementLocated(by));
+            if (button.isDisplayed()) {
+                log.info("Found {} button", elementName);
+             return true;
+            }
+            
+        } catch (Exception e) {
+            log.error("Button {} not found...{}", elementName, e.getMessage());
+        }
+        return false;
+    }
     public void clickBtn(WebElement button, boolean submittable, String btnName) {
         try {
             log.info("Locating {}", btnName);
@@ -133,6 +149,7 @@ public final class Interact {
             log.error("Invalid argument on {} field not found...\n {}", fieldName, iae.getMessage());
         }
     }
+
 
     public String getHtml(String url){
 
