@@ -57,14 +57,10 @@ public class FacebookServiceImpl implements FacebookService {
                 driver.navigate().refresh();
             }
 
-//            if(!interact.elementVisible(By.cssSelector(facebookVariable.getLoggedIn()),"visible")){
-//                log.error("Signing in error occurred! Check your cookies ");
-//                System.exit(0);
-//            }
 
             log.info("Successfully logged in ");
         } catch (Exception e) {
-            log.error("Error opening Facebook: ", e);
+            log.error("Error opening Facebook: {}", e.getMessage());
             log.error("Shutting down program");
             System.exit(0);
         }
@@ -126,7 +122,10 @@ public class FacebookServiceImpl implements FacebookService {
     private void scroll(final int noOfPages) {
         final int PIXELS = 3000;
         final int DELAY_TIME = 2000;
-
+        if(noOfPages<1){
+            log.info("Did not scroll, provided noOfPages: "+noOfPages);
+            return;
+        }
         for (int i = 0; i < noOfPages; i++) {
             try {
                 log.info("Scrolled! {}", i + 1);
@@ -166,21 +165,24 @@ public class FacebookServiceImpl implements FacebookService {
         try {
 
             interact.visitLink(profileLink + facebookVariable.getWorkAndEducationParam());
-            List<WebElement> workAndCollege = interact.getElements(By.cssSelector(facebookVariable.getWorkAndCollege()), "Work and College");
-            List<WorkOrSchool> jobs = extractWorkOrSchool(workAndCollege.get(0), "jobs");
-            List<WorkOrSchool> schools = extractWorkOrSchool(workAndCollege.get(1), "schools");
+            WebElement workSection=interact.getElement(By.cssSelector(facebookVariable.getWork()),"Work section");
+            WebElement collegeSection=interact.getElement(By.cssSelector(facebookVariable.getCollege()),"College section ");
 
-//            interact.visitLink(profileLink + facebookVariable.getRelationshipParam());
-////            List<FamilyMember> familyMembers = extractFamilyMembers();
-////            List<InRelationshipWith> inRelationshipWith = extractRelationship();
-//
-//            interact.visitLink(profileLink + facebookVariable.getPlaceLivedParam());
-//            String hometown = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(facebookVariable.getHometown()))).getText();
-//            String currentCity = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(facebookVariable.getCurrentCity()))).getText();
+            List<WorkOrSchool> jobs = extractWorkOrSchool(workSection, "jobs");
+            List<WorkOrSchool> schools = extractWorkOrSchool(collegeSection, "schools");
 
-            return new About(jobs, schools, null,null, null, null, null, null);
 
-//            return new About(jobs, schools, null,null, hometown, currentCity, null, null);
+            interact.visitLink(profileLink + facebookVariable.getRelationshipParam());
+            List<FamilyMember> familyMembers = extractFamilyMembers();
+            List<InRelationshipWith> inRelationshipWith = extractRelationship();
+
+            interact.visitLink(profileLink + facebookVariable.getPlaceLivedParam());
+            String hometown = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(facebookVariable.getHometown()))).getText();
+            String currentCity = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(facebookVariable.getCurrentCity()))).getText();
+
+//            return new About(jobs, schools, null,null, null, null, null, null);
+
+            return new About(jobs, schools, familyMembers,inRelationshipWith, hometown, currentCity, null, null);
         } catch (NullPointerException e){
             log.error("Error fetching profile information: {} ", e.getMessage());
             return null;
@@ -192,6 +194,10 @@ public class FacebookServiceImpl implements FacebookService {
 
     private List<WorkOrSchool> extractWorkOrSchool(WebElement section, String type) {
         try {
+            if(section==null){
+                log.info("Section is null");
+                return null;
+            }
             return section
                     .findElements(By.cssSelector(facebookVariable.getWorkAndCollegeName()))
                     .stream()

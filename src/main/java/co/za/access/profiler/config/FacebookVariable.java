@@ -33,6 +33,8 @@ public class FacebookVariable {
     private String profileName;
     private String about;
     private String aboutSection;
+    private String work;
+    private String college;
 
     private String workAndCollege;
     private String workAndEducationParam;
